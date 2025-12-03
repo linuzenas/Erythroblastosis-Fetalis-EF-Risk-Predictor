@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+
+# Virtual env
+.venv/
+venv/
+
+# Streamlit
+.streamlit/
+
+# Local DB and runtime data
+ef_app.db
+data/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.swp
+
+# Logs and temps
+*.log
+*.tmp

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RhGuard Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; margin: 2rem; background-color: #f8fafc; color: #1e293b; }
+        .container { max-width: 1200px; margin: auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 2rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        h1 { font-size: 1.5rem; font-weight: 600; text-align: center; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EF Risk Prediction System Architecture</h1>
+        <div class="mermaid">
+        graph TB
+            subgraph "Client Layer"
+                Browser["Web Browser"]
+            end
+
+            subgraph "Presentation Layer"
+                Streamlit["Streamlit UI Components\nFile Uploader, Select Boxes, Buttons"]
+            end
+
+            subgraph "Application Logic Layer"
+                Controller["Main Application Logic (app.py)"]
+                subgraph "Core Services"
+                    ImageProcessor["Image Processor"]
+                    DataEncoder["Clinical Data Encoder"]
+                    PredictionEngine["Prediction Engine"]
+                    ExplanationGenerator["Explanation Generator (SHAP, Grad-CAM)"]
+                end
+            end
+
+            subgraph "Machine Learning Model Layer"
+                CNN["CNN Model (ResNet18)"]
+                RiskModel["Risk Model (Random Forest)"]
+                Encoder["Data Encoder (OneHotEncoder)"]
+            end
+
+            subgraph "Data & Persistence Layer"
+                ModelFiles["Model Files (.pth, .pkl)"]
+                ImageStorage["In-Memory Image Storage"]
+            end
+
+            %% Connections
+            Browser --> Streamlit
+            Streamlit --> Controller
+
+            Controller --> ImageProcessor
+            Controller --> DataEncoder
+            Controller --> PredictionEngine
+            Controller --> ExplanationGenerator
+            
+            ImageProcessor --> CNN
+            DataEncoder --> Encoder
+            
+            PredictionEngine --> CNN
+            PredictionEngine --> RiskModel
+            PredictionEngine --> Encoder
+
+            ExplanationGenerator --> CNN
+            ExplanationGenerator --> RiskModel
+
+            CNN --> ModelFiles
+            RiskModel --> ModelFiles
+            Encoder --> ModelFiles
+            ImageProcessor --> ImageStorage
+            
+            %% Styling
+            classDef clientLayer fill:#e0f2fe,stroke:#0ea5e9
+            classDef presentationLayer fill:#dcfce7,stroke:#22c55e
+            classDef appLayer fill:#ede9fe,stroke:#8b5cf6
+            classDef coreSvc fill:#fef3c7,stroke:#f59e0b
+            classDef modelLayer fill:#fee2e2,stroke:#ef4444
+            classDef dataLayer fill:#f3f4f6,stroke:#6b7280
+
+            class Browser clientLayer
+            class Streamlit presentationLayer
+            class Controller,ImageProcessor,DataEncoder,PredictionEngine,ExplanationGenerator appLayer
+            class ImageProcessor,DataEncoder,PredictionEngine,ExplanationGenerator coreSvc
+            class CNN,RiskModel,Encoder modelLayer
+            class ModelFiles,ImageStorage dataLayer
+        </div>
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

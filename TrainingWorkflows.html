@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RhGuard Training Workflows</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      margin: 24px;
+      background: #f8fafc;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      margin-bottom: 24px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: 22px;
+    }
+    h2 {
+      margin: 16px 0 8px;
+      font-size: 18px;
+    }
+    .note {
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+  </style>
+
+  <!-- Mermaid -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: "default", securityLevel: "loose" });
+  </script>
+</head>
+<body>
+  <div class="card">
+    <h1>RhGuard Training Workflows</h1>
+    <div class="note">Left: ResNet18 (image branch). Right: RandomForest (clinical + p_e branch).</div>
+
+    <h2>ResNet18 (Image Model) Training</h2>
+    <div class="mermaid">
+flowchart TD
+    A[Collect Blood Smear Images]
+    --> B[Split into Train, Validation, and Test sets]
+    --> C[Preprocess Images - Resize 224x224 and Normalize]
+    --> D[Apply Data Augmentation - flips and rotations]
+    --> E[Load ResNet18 Backbone]
+    --> F[Attach Linear Layer output 1]
+    --> G[Compute Sigmoid Probability]
+    --> H[Calculate Binary Cross Entropy Loss]
+    --> I[Optimize with Adam Optimizer]
+    --> J[Run Training Loop over Epochs]
+    --> K[Apply Early Stopping and Save Checkpoints]
+    --> L[Export Best Model Weights - erythroblast_detector.pth]
+    </div>
+
+    <h2>RandomForest (Clinical + p_e) Training</h2>
+    <div class="mermaid">
+flowchart TD
+    A2[Collect Clinical Records]
+    --> B2[One Hot Encode Maternal Rh, Fetal Rh, Coombs]
+    --> C2[Combine with CNN Output Probability]
+    --> D2[Split into Train, Validation, and Test sets]
+    --> E2[Train Random Forest Regressor]
+    --> F2[Perform Cross Validation and Hyperparameter Search]
+    --> G2[Select Best Model]
+    --> H2[Evaluate using MAE, RMSE, R2]
+    --> I2[Retrain on Combined Train and Validation Sets]
+    --> J2[Export Final Model - ef_risk_model.pkl]
+    </div>
+  </div>
+</body>
+</html>

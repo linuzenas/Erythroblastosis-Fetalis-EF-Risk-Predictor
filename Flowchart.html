@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <title>Workflow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; margin: 2rem; background-color: #f8fafc; color: #1e293b; }
+        .container { max-width: 900px; margin: auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 2rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EF Risk Prediction Workflow</h1>
+        <div class="mermaid">
+        flowchart TD
+            A["Step 1: Enter Clinical Data\nMaternal Rh, Fetal Rh, Coombs Test"]
+            B["Step 2: Upload Blood Smear Image"]
+            
+            C["Preprocess Image\nResize -> ToTensor -> Normalize"]
+            D{"CNN Model\n(ResNet18)"}
+            E["Calculate Erythroblast Probability"]
+            
+            F["One-Hot Encode Clinical Features"]
+            
+            G["Combine Features\nEncoded Data and Probability"]
+            
+            H{"Risk Prediction Model\n(Random Forest)"}
+            I["Generate Risk Score"]
+            J["Generate Explanations\nGrad-CAM for Image\nSHAP for Features"]
+            K["Display Results on Dashboard\nScore, Visualizations, Recommendations"]
+
+            %% Define the flow of connections
+            A --> F
+            B --> C --> D --> E
+            F --> G
+            E --> G
+            G --> H --> I --> J --> K
+        </div>
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>
