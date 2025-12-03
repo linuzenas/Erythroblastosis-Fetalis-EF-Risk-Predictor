@@ -1,6 +1,7 @@
 import streamlit as st
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torchvision.models as models
 import torchvision.transforms as transforms
 from PIL import Image
@@ -12,7 +13,12 @@ try:
     import shap  # optional; may not be installed in some environments
 except Exception:
     shap = None
-import cv2
+try:
+    import cv2
+    CV2_AVAILABLE = True
+except Exception:
+    cv2 = None
+    CV2_AVAILABLE = False
 from torchvision.models import ResNet18_Weights
 import os
 import io
@@ -29,6 +35,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 init_db()
+
+if not CV2_AVAILABLE:
+    st.warning("OpenCV is unavailable in this environment. Heatmaps will fall back to a matplotlib-based overlay.")
 
 # Basic theming (lightweight CSS)
 st.markdown(
@@ -155,9 +164,9 @@ def generate_gradcam(model, image, target_layer_name='layer4'):
     cam = cam - cam.min()
     cam = cam / (cam.max() + 1e-8)
     
-    # Resize to input image size
+    # Resize to input image size without relying on OpenCV
+    cam = F.interpolate(cam, size=(224, 224), mode='bilinear', align_corners=False)
     cam = cam.squeeze().cpu().numpy()
-    cam = cv2.resize(cam, (224, 224))
     
     return cam
 
@@ -167,12 +176,17 @@ def overlay_heatmap(image, heatmap, alpha=0.5):
     img_array = np.array(image.resize((224, 224)))
     
     # Normalize heatmap to 0-255 and apply colormap
-    heatmap = np.uint8(255 * heatmap)
-    heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
-    heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
-    
-    # Overlay heatmap on image
-    overlayed = cv2.addWeighted(img_array, 1-alpha, heatmap, alpha, 0)
+    heatmap = np.clip(heatmap, 0, 1)
+    if CV2_AVAILABLE:
+        heatmap_img = np.uint8(255 * heatmap)
+        heatmap_img = cv2.applyColorMap(heatmap_img, cv2.COLORMAP_JET)
+        heatmap_img = cv2.cvtColor(heatmap_img, cv2.COLOR_BGR2RGB)
+        overlayed = cv2.addWeighted(img_array, 1 - alpha, heatmap_img, alpha, 0)
+    else:
+        colormap = plt.get_cmap("jet")
+        heatmap_img = colormap(heatmap)[..., :3]
+        heatmap_img = np.uint8(heatmap_img * 255)
+        overlayed = np.uint8((1 - alpha) * img_array + alpha * heatmap_img)
     
     return overlayed
 
