@@ -220,11 +220,6 @@ This will test:
    - Ensure sufficient RAM (at least 4GB recommended)
    - Close other applications if needed
 
-### Getting Help
-- Check the terminal output for error messages
-- Verify all dependencies are installed correctly
-- Ensure Python version compatibility
-
 ## 🔬 Technical Details
 
 ### Machine Learning Pipeline
@@ -244,84 +239,13 @@ This will test:
    - Risk model processes features → risk score
    - Encoder transforms clinical data → numerical features
 
-### Model Architecture
-
-#### CNN (ResNet18)
-```
-Input: 3x224x224 RGB image
-↓
-ResNet18 backbone (pretrained weights removed)
-↓
-Global Average Pooling
-↓
-Linear layer (512 → 1)
-↓
-Sigmoid activation
-↓
-Output: Erythroblast probability (0-1)
-```
-
-#### Risk Model (Random Forest)
-```
-Input: 7 features (3 one-hot encoded + 1 probability)
-↓
-100 decision trees
-↓
-Average prediction
-↓
-Output: Risk score (0-1)
-```
-
-## 📈 Future Enhancements
-
-### Potential Improvements
-1. **Real Medical Data**: Train on actual clinical datasets
-2. **Additional Features**: Include more clinical parameters
-3. **Model Updates**: Regular retraining with new data
-4. **Mobile App**: Create mobile-friendly interface
-5. **API Integration**: Connect to hospital systems
-6. **Multi-language**: Support multiple languages
-
-### Research Opportunities
-1. **Advanced Architectures**: Try Vision Transformers or newer CNN models
-2. **Ensemble Methods**: Combine multiple models for better accuracy
-3. **Uncertainty Quantification**: Provide confidence intervals
-4. **Active Learning**: Improve models with user feedback
-
-## 📚 Learning Resources
-
-### For Beginners
-- **Machine Learning**: [Scikit-learn documentation](https://scikit-learn.org/)
-- **Deep Learning**: [PyTorch tutorials](https://pytorch.org/tutorials/)
-- **Web Apps**: [Streamlit documentation](https://docs.streamlit.io/)
-- **Medical AI**: [Medical imaging with deep learning](https://www.coursera.org/learn/medical-ai)
-
-### Advanced Topics
-- **Explainable AI**: [SHAP documentation](https://shap.readthedocs.io/)
-- **Computer Vision**: [OpenCV tutorials](https://opencv.org/tutorials/)
-- **Model Deployment**: [MLOps best practices](https://ml-ops.org/)
-
 ## 📄 License
 
 This project is for educational and research purposes. Please ensure compliance with medical software regulations if used in clinical settings.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Areas for contribution:
-- Model improvements
-- UI/UX enhancements
-- Documentation updates
-- Bug fixes
-- Feature additions
-
-## 📞 Support
-
-For technical support or questions:
-1. Check this documentation first
-2. Run the test script to identify issues
-3. Check the terminal output for error messages
-4. Verify all dependencies are correctly installed
-
+Contributions are welcome!
 ---
 
 **Remember**: This application is for educational purposes only and should not be used for actual medical diagnosis or treatment decisions.
